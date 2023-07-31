@@ -1,22 +1,44 @@
-# Pepr Module
+# Deploy CRD
 
-This is a Pepr Module. [Pepr](https://github.com/defenseunicorns/pepr) is a Kubernetes transformation system
-written in Typescript.
-
-The `capabilities` directory contains all the capabilities for this module. By default,
-a capability is a single typescript file in the format of `capability-name.ts` that is
-imported in the root `pepr.ts` file as `import { HelloPepr } from "./capabilities/hello-pepr";`.
-Because this is typescript, you can organize this however you choose, e.g. creating a sub-folder
-per-capability or common logic in shared files or folders.
-
-Example Structure:
-
+```bash
+kubectl create -f ../k8s/GatewayCRD.yaml
 ```
-Module Root
-├── package.json
-├── pepr.ts
-└── capabilities
-    ├── example-one.ts
-    ├── example-three.ts
-    └── example-two.ts
+
+```bash
+k create -f -<<EOF
+apiVersion: pepr.dev/v1beta1
+kind: Gateway
+metadata:
+  name: case-was-here
+  namespace: default
+spec:
+  server:
+    redirectPort: 80
+    port: 8080 
+  jwtAuth:
+    secretKey: "secret"
+  rateLimit:
+    rate: 5
+EOF
+```
+
+```bash
+kubectl create -f -<<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    controller-proxy: case-was-here
+  name: t
+  namespace: default
+spec:
+  containers:
+  - image: nginx
+    name: t
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+EOF
 ```

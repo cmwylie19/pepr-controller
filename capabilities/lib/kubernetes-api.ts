@@ -12,7 +12,7 @@ import {
 import { GatewayBody } from "./gateway";
 
 export const createContainer = (gw: GatewayBody): V1Container => ({
-  image: "cmwylie19/edge-proxy:0.0.1",
+  image: "cmwylie19/edge-gateway:0.0.1",
   name: "proxy",
   command: ["./edge-gateway", "serve", "-r", JSON.stringify(gw.server?.redirectPort), "-p", JSON.stringify(gw.server?.port), "rateLimit", "--rate", JSON.stringify(gw.rateLimit?.rate), "jwt", "-s", gw.jwtAuth.secretKey]
 })
