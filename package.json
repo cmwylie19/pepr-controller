@@ -1,0 +1,33 @@
+{
+  "name": "pepr-controller",
+  "version": "0.0.1",
+  "description": "Controller for Edge Proxy",
+  "keywords": [
+    "pepr",
+    "k8s",
+    "policy-engine",
+    "pepr-module",
+    "security"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "pepr": {
+    "name": "pepr-controller",
+    "uuid": "e2fa0123-4ef2-5bf1-93f2-f59a67c77633",
+    "onError": "audit",
+    "alwaysIgnore": {
+      "namespaces": [],
+      "labels": []
+    }
+  },
+  "scripts": {
+    "k3d-setup": "k3d cluster delete pepr-dev && k3d cluster create pepr-dev --k3s-arg '--debug@server:0'"
+  },
+  "dependencies": {
+    "pepr": "0.12.0"
+  },
+  "devDependencies": {
+    "typescript": "5.0.4"
+  }
+}
