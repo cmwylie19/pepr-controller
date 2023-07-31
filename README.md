@@ -17,11 +17,15 @@ metadata:
   namespace: default
 spec:
   server:
+    # Redirect Port (Application Port)
     redirectPort: 80
+    # Proxy Port
     port: 8080 
   jwtAuth:
+    # JWT Signing Key
     secretKey: "secret"
   rateLimit:
+    # Requests per 60 seconds
     rate: 5
 EOF
 ```
@@ -36,7 +40,7 @@ metadata:
   creationTimestamp: null
   labels:
     controller-proxy: case-was-here
-  name: t
+  name: tt
   namespace: default
 spec:
   containers:
@@ -60,14 +64,14 @@ k run curler --image=nginx
 Query against the proxy (token is created for arm mac, compile it for your system)
 
 ```bash
-k exec -it curler -- curl -L -H "Authorization: Bearer $(./token 88 secret)" t-proxy:8080
+k exec -it curler -- curl -L -H "Authorization: Bearer $(./token 88 secret)" tt-proxy:8080
 ```
 
 Hit the rate limit
 
 ```bash
 for s in $(seq 33); do 
-k exec -it curler -- curl -L -H "Authorization: Bearer $(./token 88 secret)" t-proxy:8080
+k exec -it curler -- curl -L -H "Authorization: Bearer $(./token 88 secret)" tt-proxy:8080
 done | grep "exceeded"
 ```
 
@@ -95,7 +99,7 @@ output
 Curl without JWT
 
 ```bash
-k exec -it curler -- curl -L t-proxy:8080
+k exec -it curler -- curl -L tt-proxy:8080
 ```
 
 output
