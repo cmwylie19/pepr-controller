@@ -1,0 +1,48 @@
+package main
+
+import (
+	"time"
+
+	"fmt"
+	"os"
+
+	"github.com/golang-jwt/jwt"
+)
+
+func createJWTToken(id, secret string) (string, error) {
+	token := jwt.New(jwt.SigningMethodHS256)
+
+	// Set claims
+	claims := token.Claims.(jwt.MapClaims)
+	claims["id"] = id
+	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
+
+	// Generate encoded token and send it as response
+	Token, err := token.SignedString([]byte(secret))
+	if err != nil {
+		return "", err
+	}
+
+	return Token, nil
+}
+
+func main() {
+	// Check if ID and secret are provided as arguments
+	if len(os.Args) < 3 {
+		fmt.Println("Usage: go run main.go <ID> <secret>")
+		return
+	}
+
+	// Get ID and secret from command-line arguments
+	id := os.Args[1]
+	secret := os.Args[2]
+
+	// Create the JWT token
+	token, err := createJWTToken(id, secret)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+
+	fmt.Println(token)
+}

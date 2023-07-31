@@ -1,0 +1,101 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  containers:
+  - name: gateway
+    image: cmwylie19/edge-gateway:0.0.1
+    command:
+     - ./edge-gateway
+      - serve
+      - -r
+      - "80"
+      - -p
+      - "8080"
+      - rateLimit
+      - --rate
+      - "5"
+      - jwt
+      - -s
+      - secret
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "250m"
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    # command: ["./edge-gateway","serve","-r","80","-p","8080"]
+    
+  - image: nginx
+    name: nginx
+    ports:
+    - containerPort: 80
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "250m"
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  name: nginx
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+    name: gatway
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+    name: app
+  selector:
+    run: nginx
+status:
+  loadBalancer: {}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: curler
+  name: curler
+spec:
+  containers:
+  - image: nginx
+    name: curler
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+---
+apiVersion: pepr.dev/v1beta1
+kind: Gateway
+metadata:
+  name: case-was-here
+  namespace: default
+spec:
+  server:
+    redirectPort: 80
+    port: 8080 
+  jwtAuth:
+    secretKey: "secret"
+  rateLimit:
+    rate: 5
+    
+
+  message: replace-me
+  counter: 0
