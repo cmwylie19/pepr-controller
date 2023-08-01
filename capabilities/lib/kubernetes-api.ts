@@ -1,10 +1,6 @@
-import { Log } from "pepr";
 import {
-  AppsV1Api,
   CoreV1Api,
   KubeConfig,
-  V1Secret,
-  PatchUtils,
   V1Container
 } from "@kubernetes/client-node";
 

@@ -1,10 +1,10 @@
 import {
   Capability,
   Log,
-  RegisterKind,
   a,
 } from "pepr";
-import { Gateway, GatewayAttributes } from "./lib/gateway"
+
+import { GatewayAttributes } from "./lib/gateway"
 import { K8sAPI, createContainer } from "./lib/kubernetes-api"
 /**
  *  The Controler Capability demonstates how Pepr can watch and control resources.
@@ -21,20 +21,23 @@ const { When } = Controller;
 const k8sAPI = new K8sAPI()
 
 let proxies: GatewayAttributes = {}
-RegisterKind(Gateway, {
+
+When(a.GenericKind, {
   group: "pepr.dev",
   version: "v1beta1",
   kind: "Gateway",
-});
-
-When(Gateway)
+})
 .IsDeleted()
 .Then(gw => { 
   // delete the gateway from the proxies object
   delete proxies[gw.Raw?.metadata?.name] 
 })
 
-When(Gateway)
+When(a.GenericKind, {
+  group: "pepr.dev",
+  version: "v1beta1",
+  kind: "Gateway",
+})
   .IsCreatedOrUpdated()
   .Then(async gw => {
     Log.info("Saw a Gateway object ", JSON.stringify(gw, undefined, 2))

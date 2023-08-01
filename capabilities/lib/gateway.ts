@@ -1,18 +1,3 @@
-import {
-  a
-} from "pepr";
-
-export class Gateway extends a.GenericKind {
-  spec: {
-    // RL Info
-    rateLimit: RateLimit;
-    // JWT info
-    jwtAuth: JWTAuth;
-    // server info
-    server: Server;
-  };
-}
-
 type Server = {
   redirectPort?: string;
   port?: string;
